@@ -5,14 +5,15 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
-from rest_framework.authtoken.views import obtain_auth_token
-
-from django.views.decorators.csrf import csrf_exempt
-
 from graphene_django.views import GraphQLView
+from rest_framework_simplejwt.views import TokenBlacklistView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenVerifyView
 
 from taskero_be.projects.graphql.schema import schema as project_schema
 
@@ -45,8 +46,15 @@ urlpatterns += [
         "api/graphql/projects",
         csrf_exempt(GraphQLView.as_view(graphiql=True, schema=project_schema)),
     ),
-    # DRF auth token
-    path("api/auth-token/", obtain_auth_token, name="obtain_auth_token"),
+    path("api/auth/", include("dj_rest_auth.urls")),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path(
+        "api/token/blacklist/",
+        TokenBlacklistView.as_view(),
+        name="token_blacklist",
+    ),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "api/docs/",
