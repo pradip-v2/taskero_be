@@ -182,6 +182,7 @@ dependencies = [
     "django-storages[s3]==1.14.6",
     "django-tenants>=3.9.0",
     "djangorestframework==3.16.1",
+    "drf-extensions>=0.8.0",
     "drf-spectacular==0.28.0",
     "flower==2.0.1",
     "graphene-django>=3.2.3",
