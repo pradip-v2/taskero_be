@@ -2,7 +2,9 @@ from django.db import models
 from django.db import transaction
 
 from taskero_be.core.models import BaseModel
+from taskero_be.core.tasks.models import TaskStatus
 from taskero_be.projects.models import Project
+from taskero_be.users.models import User
 
 
 class Task(BaseModel):
@@ -25,6 +27,22 @@ class Task(BaseModel):
     )
     level = models.PositiveIntegerField(default=1, db_index=True)
     is_done = models.BooleanField(default=False)
+    status = models.ForeignKey(
+        TaskStatus,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="tasks",
+    )
+    assignee = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="assigned_tasks",
+    )
 
     def __str__(self):
         return f"{self.pk}-{self.title}"

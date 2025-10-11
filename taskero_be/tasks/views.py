@@ -1,5 +1,7 @@
+from django_filters import rest_framework as filters
 from rest_framework import mixins
 from rest_framework import viewsets
+from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
@@ -36,3 +38,17 @@ class ProjectTasksViewSet(
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     model = Task
+    filter_backends = [filters.DjangoFilterBackend, SearchFilter]
+    filterset_fields = {
+        "title": ["icontains"],
+        "level": ["exact"],
+        "is_done": ["exact"],
+        "status": ["exact"],
+        "created_by": ["exact"],
+        "updated_by": ["exact"],
+        "created_at": ["exact", "gte", "lte"],
+        "updated_at": ["exact", "gte", "lte"],
+        "parent_task": ["exact"],
+        "description": ["icontains"],
+    }
+    search_fields = ["title", "description"]
