@@ -3,6 +3,7 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 from taskero_be.projects.views import ProjectViewSet
 from taskero_be.tasks.views import ProjectTasksViewSet
 from taskero_be.tasks.views import TaskViewSet
+from taskero_be.tenants.views import TenantViewSet
 from taskero_be.users.api.views import UserViewSet
 
 router = ExtendedSimpleRouter()
@@ -20,6 +21,7 @@ router.register(
     parents_query_lookups=["project"],
 )
 router.register("tasks", TaskViewSet, basename="tasks")
+router.register("tenants", TenantViewSet, basename="tenants")
 
 
 app_name = "api"

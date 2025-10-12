@@ -4,7 +4,11 @@ from taskero_be.tenants.models import Tenant
 
 
 class TenantTheme(models.Model):
-    tenant = models.OneToOneField[Tenant](Tenant, on_delete=models.CASCADE)
+    tenant = models.OneToOneField[Tenant](
+        Tenant,
+        on_delete=models.CASCADE,
+        related_name="tenant_theme",
+    )
     logo_short_sm = models.ImageField(upload_to="themes/logo_short_sm/")
     logo_short_lg = models.ImageField(upload_to="themes/logo_short_lg/")
     logo_long_sm = models.ImageField(upload_to="themes/logo_long_sm/")
