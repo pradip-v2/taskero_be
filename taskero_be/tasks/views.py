@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django_filters import rest_framework as filters
 from rest_framework import mixins
 from rest_framework import viewsets
@@ -18,7 +19,7 @@ class TaskViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet[Task],
 ):
-    queryset = Task.objects.all()
+    queryset = Task.objects.all().annotate(subtasks_count=Count("subtasks"))
     serializer_class = TaskSerializer
 
     @add_created_by
@@ -35,7 +36,7 @@ class ProjectTasksViewSet(
     ListModelMixin,
     viewsets.GenericViewSet[Task],
 ):
-    queryset = Task.objects.all()
+    queryset = Task.objects.all().annotate(subtasks_count=Count("subtasks"))
     serializer_class = TaskSerializer
     model = Task
     filter_backends = [filters.DjangoFilterBackend, SearchFilter]

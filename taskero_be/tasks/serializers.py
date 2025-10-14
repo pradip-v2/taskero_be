@@ -17,6 +17,7 @@ class TaskSerializer(BaseModelSerializer[Task]):
         read_only=True,
         default=None,
     )
+    subtasks_count = serializers.IntegerField(read_only=True, default=0)
 
     class Meta:
         model = Task

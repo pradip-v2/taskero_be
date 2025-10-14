@@ -108,6 +108,7 @@ TENANT_APPS = [
     "taskero_be.users",
     "taskero_be.projects",
     "taskero_be.tasks",
+    "taskero_be.project_members",
 ]
 
 INSTALLED_APPS = list(SHARED_APPS) + [
