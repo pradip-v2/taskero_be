@@ -17,3 +17,15 @@ class UserRelationShortSerializer(serializers.ModelSerializer[User]):
     class Meta:
         model = User
         fields = ["id", "name", "email"]
+
+
+class CurrentUserDetailSerializer(serializers.ModelSerializer[User]):
+    class Meta:
+        model = User
+        fields = ["id", "name", "email"]
+
+
+class UserProjectSerializer(serializers.Serializer):
+    project__title = serializers.CharField()
+    project__id = serializers.IntegerField()
+    project__owner__name = serializers.CharField()
