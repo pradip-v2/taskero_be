@@ -16,10 +16,6 @@ class UserViewSet(viewsets.ModelViewSet[User]):
     queryset = User.objects.all()
     permission_classes = [IsSuperUserOrSelfRequest]
 
-    def get_queryset(self, *args, **kwargs):
-        assert isinstance(self.request.user.id, int)
-        return self.queryset.filter(id=self.request.user.id)
-
     @extend_schema(
         responses={
             200: CurrentUserDetailSerializer,

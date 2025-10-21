@@ -61,6 +61,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ROOT_URLCONF = "config.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -93,6 +94,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "drf_spectacular",
     "django_filters",
+    "channels",
 ]
 
 LOCAL_SHARED_APPS = [
@@ -109,6 +111,7 @@ TENANT_APPS = [
     "taskero_be.projects",
     "taskero_be.tasks",
     "taskero_be.project_members",
+    "taskero_be.communication",
 ]
 
 INSTALLED_APPS = list(SHARED_APPS) + [
@@ -618,3 +621,12 @@ SIMPLE_JWT = {
 }
 
 JWT_AUTH_HTTPONLY = False
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],  # use docker service name here
+        },
+    },
+}

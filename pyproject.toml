@@ -167,6 +167,8 @@ requires-python = "==3.13.*"
 dependencies = [
     "argon2-cffi==25.1.0",
     "celery==5.5.3",
+    "channels>=4.3.1",
+    "channels-redis>=4.3.0",
     "collectfasta==3.3.1",
     "crispy-bootstrap5==2025.6",
     "dj-rest-auth>=7.0.1",

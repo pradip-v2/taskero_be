@@ -1,5 +1,7 @@
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
+from taskero_be.communication.views import ConversationViewSet
+from taskero_be.communication.views import MessageViewSet
 from taskero_be.project_members.views import ProjectMemberViewSet
 from taskero_be.project_members.views import ProjectWiseProjectMemberViewSet
 from taskero_be.projects.views import ProjectViewSet
@@ -34,6 +36,10 @@ projects_router.register(
 router.register("project-members", ProjectMemberViewSet, basename="project_members")
 router.register("tasks", TaskViewSet, basename="tasks")
 router.register("tenants", TenantViewSet, basename="tenants")
+
+# Communication app routers
+router.register("conversations", ConversationViewSet, basename="conversations")
+router.register("messages", MessageViewSet, basename="messages")
 
 
 app_name = "api"

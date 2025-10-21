@@ -1,13 +1,14 @@
-async def websocket_application(scope, receive, send):
-    while True:
-        event = await receive()
+from channels.routing import ProtocolTypeRouter
+from channels.routing import URLRouter
 
-        if event["type"] == "websocket.connect":
-            await send({"type": "websocket.accept"})
+from taskero_be.communication.routing import websocket_urlpatterns
+from taskero_be.tenants.middlewares import JWTAuthMiddleware
+from taskero_be.tenants.middlewares import TenantASGIMiddleware
 
-        if event["type"] == "websocket.disconnect":
-            break
-
-        if event["type"] == "websocket.receive":
-            if event["text"] == "ping":
-                await send({"type": "websocket.send", "text": "pong!"})
+websocket_application = ProtocolTypeRouter(
+    {
+        "websocket": TenantASGIMiddleware(
+            JWTAuthMiddleware(URLRouter(websocket_urlpatterns)),
+        ),
+    },
+)
