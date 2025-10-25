@@ -68,5 +68,4 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-CORS_ALLOWED_ORIGINS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
