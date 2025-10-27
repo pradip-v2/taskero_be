@@ -34,6 +34,7 @@ class Message(BaseModel):
         Conversation,
         on_delete=models.CASCADE,
         related_name="messages",
+        db_index=True,
     )
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()

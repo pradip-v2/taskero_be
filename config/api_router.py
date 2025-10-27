@@ -1,5 +1,6 @@
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
+from taskero_be.communication.views import ConversationMessagesViewSet
 from taskero_be.communication.views import ConversationViewSet
 from taskero_be.communication.views import MessageViewSet
 from taskero_be.project_members.views import ProjectMemberViewSet
@@ -38,7 +39,17 @@ router.register("tasks", TaskViewSet, basename="tasks")
 router.register("tenants", TenantViewSet, basename="tenants")
 
 # Communication app routers
-router.register("conversations", ConversationViewSet, basename="conversations")
+conversation_router = router.register(
+    "conversations",
+    ConversationViewSet,
+    basename="conversations",
+)
+conversation_router.register(
+    "messages",
+    ConversationMessagesViewSet,
+    basename="conversation-messages",
+    parents_query_lookups=["conversation"],
+)
 router.register("messages", MessageViewSet, basename="messages")
 
 
