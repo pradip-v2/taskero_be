@@ -25,7 +25,7 @@ class Conversation(BaseModel):
     def __str__(self):
         return (
             self.name
-            or f"{self.type} chat ({','.join([participant.name for participant in self.participants.all()])})"
+            or f"{self.type} chat ({','.join([participant.name for participant in self.participants.all()])})"  # noqa: E501
         )
 
 
@@ -41,3 +41,16 @@ class Message(BaseModel):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class MessageAttachment(models.Model):
+    message = models.ForeignKey[Message](
+        Message,
+        on_delete=models.CASCADE,
+        related_name="attachments",
+    )
+    file_url = models.URLField()
+    key = models.CharField(max_length=512)  # S3 object key
+
+    def __str__(self):
+        return f"{self.pk}-Attachment for Message ID {self.message.pk}"

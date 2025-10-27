@@ -2,12 +2,33 @@ from rest_framework import serializers
 
 from taskero_be.communication.models import Conversation
 from taskero_be.communication.models import Message
+from taskero_be.communication.models import MessageAttachment
 from taskero_be.core.serializers import BaseModelSerializer
 from taskero_be.users.api.serializers import UserRelationShortSerializer
 
 
+class MessageAttachmentRequestSerializer(serializers.Serializer):
+    file_url = serializers.CharField()
+    key = serializers.CharField()
+
+
+class MessageAttachmentSerializer(serializers.ModelSerializer[MessageAttachment]):
+    class Meta:
+        model = MessageAttachment
+        fields = serializers.ALL_FIELDS
+
+
 class MessageSerializer(BaseModelSerializer[Message]):
     sender_data = UserRelationShortSerializer(source="sender", read_only=True)
+    attachments = MessageAttachmentRequestSerializer(
+        write_only=True,
+        many=True,
+    )
+    attachments_data = MessageAttachmentSerializer(
+        many=True,
+        source="attachments",
+        read_only=True,
+    )
 
     class Meta:
         model = Message

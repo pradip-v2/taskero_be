@@ -38,3 +38,14 @@ class BaseModelSerializer[T](serializers.ModelSerializer[T]):
 
 class ResponseSerializer(serializers.Serializer):
     detail = serializers.CharField()
+
+
+class GeneratePresignedURLRequestSerializer(serializers.Serializer):
+    filename = serializers.CharField()
+    content_type = serializers.CharField()
+
+
+class GeneratePresignedURLResponseSerializer(serializers.Serializer):
+    upload_url = serializers.CharField()
+    file_url = serializers.CharField()
+    key = serializers.CharField()

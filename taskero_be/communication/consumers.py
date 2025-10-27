@@ -5,7 +5,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django_tenants.utils import schema_context
 
 from taskero_be.communication.models import Message
+from taskero_be.communication.models import MessageAttachment
 from taskero_be.communication.serializers import MessageSerializer
+from taskero_be.core.s3_utils import remove_temp_tag_from_s3_object
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -54,12 +56,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def create_message(self, data):
         with schema_context(self.scope["schema_name"]):
-            return Message.objects.create(
+            message = Message.objects.create(
                 conversation_id=self.conversation_id,
                 sender=self.scope["user"],
                 content=data["message"],
             )
 
+            attachments = data.get("attachments", [])
+            for att in attachments:
+                # Remove temp tag from S3 file now that it's in use
+                updated_key, updated_url = remove_temp_tag_from_s3_object(att["key"])
+                # Optionally create MessageAttachment records if your model supports it
+                MessageAttachment.objects.create(
+                    message=message,
+                    file_url=updated_url,
+                    key=updated_key,
+                )
+
+            return message
+
     @database_sync_to_async
     def serialize_message(self, message):
-        return MessageSerializer(message).data
+        with schema_context(self.scope["schema_name"]):
+            return MessageSerializer(message).data

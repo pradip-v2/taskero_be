@@ -275,4 +275,3 @@ taskero_be/media/
 .ipython/
 .env
 .envs/*
-!.envs/.local/

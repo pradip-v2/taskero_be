@@ -15,6 +15,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.views import TokenVerifyView
 
+from taskero_be.core.views import GeneratePresignedURLView
 from taskero_be.projects.graphql.schema import schema as project_schema
 
 urlpatterns = [
@@ -54,6 +55,12 @@ urlpatterns += [
         "api/token/blacklist/",
         TokenBlacklistView.as_view(),
         name="token_blacklist",
+    ),
+    # For S3 presigned URL generation
+    path(
+        "api/s3/presigned-url/",
+        GeneratePresignedURLView.as_view(),
+        name="generate_presigned_url",
     ),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
