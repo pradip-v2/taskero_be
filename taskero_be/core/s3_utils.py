@@ -49,10 +49,11 @@ def remove_temp_tag_from_s3_object(key: str) -> str:
     updated_url = (
         f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{updated_key}"
     )
-    s3.copy_object(
-        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-        CopySource={"Bucket": settings.AWS_STORAGE_BUCKET_NAME, "Key": key},
-        Key=updated_key,
-    )
-    s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
+    if key != updated_key:
+        s3.copy_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            CopySource={"Bucket": settings.AWS_STORAGE_BUCKET_NAME, "Key": key},
+            Key=updated_key,
+        )
+        s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
     return updated_key, updated_url
