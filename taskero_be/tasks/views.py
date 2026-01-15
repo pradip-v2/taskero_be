@@ -36,7 +36,16 @@ class ProjectTasksViewSet(
     ListModelMixin,
     viewsets.GenericViewSet[Task],
 ):
-    queryset = Task.objects.all().annotate(subtasks_count=Count("subtasks"))
+    queryset = (
+        Task.objects.all()
+        .select_related(
+            "status",
+            "project",
+            "parent_task",
+            "assignee",
+        )
+        .annotate(subtasks_count=Count("subtasks", distinct=True))
+    )
     serializer_class = TaskSerializer
     model = Task
     filter_backends = [filters.DjangoFilterBackend, SearchFilter]

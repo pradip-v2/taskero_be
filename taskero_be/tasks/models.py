@@ -26,13 +26,14 @@ class Task(BaseModel):
         related_name="subtasks",
     )
     level = models.PositiveIntegerField(default=1, db_index=True)
-    is_done = models.BooleanField(default=False)
+    is_done = models.BooleanField(default=False, db_index=True)
     status = models.ForeignKey(
         TaskStatus,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         default=None,
+        db_index=True,
         related_name="tasks",
     )
     assignee = models.ForeignKey(
@@ -40,6 +41,7 @@ class Task(BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        db_index=True,
         default=None,
         related_name="assigned_tasks",
     )
