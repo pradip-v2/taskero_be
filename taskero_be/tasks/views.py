@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from rest_framework import mixins
 from rest_framework import viewsets
@@ -9,6 +10,7 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 from taskero_be.core.decorators import add_created_by
 from taskero_be.core.decorators import add_updated_by
 from taskero_be.tasks.models import Task
+from taskero_be.tasks.serializers import TaskDetailSerializer
 from taskero_be.tasks.serializers import TaskSerializer
 
 
@@ -19,8 +21,23 @@ class TaskViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet[Task],
 ):
-    queryset = Task.objects.all().annotate(subtasks_count=Count("subtasks"))
-    serializer_class = TaskSerializer
+    queryset = Task.objects.select_related(
+        "status",
+        "project",
+        "parent_task",
+        "assignee",
+    ).prefetch_related(
+        Prefetch(
+            "subtasks",
+            queryset=Task.objects.select_related(
+                "status",
+                "project",
+                "parent_task",
+                "assignee",
+            ),
+        ),
+    )
+    serializer_class = TaskDetailSerializer
 
     @add_created_by
     def create(self, request, *args, **kwargs):

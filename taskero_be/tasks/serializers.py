@@ -28,3 +28,17 @@ class TaskSerializer(BaseModelSerializer[Task]):
     class Meta:
         model = Task
         fields = serializers.ALL_FIELDS
+
+
+class TaskDetailSerializer(TaskSerializer):
+    subtasks_data = TaskSerializer(
+        source="subtasks",
+        many=True,
+        read_only=True,
+        default=[],
+    )
+    subtasks_count = None
+
+    class Meta:
+        model = Task
+        fields = serializers.ALL_FIELDS
