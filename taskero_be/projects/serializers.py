@@ -6,7 +6,7 @@ from taskero_be.users.api.serializers import UserRelationShortSerializer
 
 
 class ProjectSerializer(BaseModelSerializer[Project]):
-    owner_data = UserRelationShortSerializer(source="owner")
+    owner_data = UserRelationShortSerializer(source="owner", read_only=True)
 
     class Meta:
         model = Project

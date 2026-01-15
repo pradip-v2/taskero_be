@@ -3,6 +3,7 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 from taskero_be.communication.views import ConversationMessagesViewSet
 from taskero_be.communication.views import ConversationViewSet
 from taskero_be.communication.views import MessageViewSet
+from taskero_be.core.tasks.views import TaskStatusViewSet
 from taskero_be.project_members.views import ProjectMemberViewSet
 from taskero_be.project_members.views import ProjectWiseProjectMemberViewSet
 from taskero_be.projects.views import ProjectViewSet
@@ -27,6 +28,7 @@ projects_router.register(
     basename="project_tasks",
     parents_query_lookups=["project"],
 )
+router.register("task-status", TaskStatusViewSet, basename="task_status")
 projects_router.register(
     "project-wise-project-members",
     ProjectWiseProjectMemberViewSet,

@@ -21,7 +21,7 @@ class ProjectViewSet(viewsets.ModelViewSet[Project]):
         headers = self.get_success_headers(serializer.data)
         if serializer.instance and serializer.instance.owner:
             ProjectMember.objects.create(
-                user=serializer.instance.owner,
+                member=serializer.instance.owner,
                 project=serializer.instance,
             )
         return Response(

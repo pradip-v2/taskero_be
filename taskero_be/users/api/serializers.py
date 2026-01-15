@@ -29,3 +29,7 @@ class UserProjectSerializer(serializers.Serializer):
     project__title = serializers.CharField()
     project__id = serializers.IntegerField()
     project__owner__name = serializers.CharField()
+
+
+class UserSearchResultsSerializer(serializers.Serializer):
+    results = UserRelationShortSerializer(many=True)
