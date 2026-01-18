@@ -105,7 +105,7 @@ LOCAL_SHARED_APPS = [
 
 SHARED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_SHARED_APPS
 
-TENANT_APPS = [
+LOCAL_TENANT_APPS = [
     "taskero_be.core",
     "taskero_be.users",
     "taskero_be.projects",
@@ -114,6 +114,8 @@ TENANT_APPS = [
     "taskero_be.communication",
 ]
 
+TENANT_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_TENANT_APPS
+
 INSTALLED_APPS = list(SHARED_APPS) + [
     app for app in TENANT_APPS if app not in SHARED_APPS
 ]
@@ -121,6 +123,7 @@ INSTALLED_APPS = list(SHARED_APPS) + [
 TENANT_MODEL = "tenants.Tenant"
 TENANT_DOMAIN_MODEL = "tenants.Domain"
 
+SHOW_PUBLIC_IF_NO_TENANT_FOUND = True
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ from taskero_be.users.models import User
 class UserSerializer(serializers.ModelSerializer[User]):
     class Meta:
         model = User
-        fields = ["name", "url", "email"]
+        fields = ["name", "email", "id"]
 
         extra_kwargs = {
             "url": {"view_name": "api:user-detail", "lookup_field": "pk"},
