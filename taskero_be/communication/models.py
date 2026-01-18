@@ -87,14 +87,10 @@ class Message(BaseModel):
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "sender_data": {
                 "id": self.sender.id,
-                "first_name": self.sender.first_name,
-                "last_name": self.sender.last_name,
+                "first_name": self.sender.name,
+                "last_name": self.sender.name,
                 "email": self.sender.email,
-                "profile_picture": (
-                    self.sender.profile_picture.url
-                    if self.sender.profile_picture
-                    else None
-                ),
+                "profile_picture": None,
             }
             if self.sender
             else None,
