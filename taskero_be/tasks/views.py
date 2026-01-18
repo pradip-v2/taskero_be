@@ -34,9 +34,9 @@ class TaskViewSet(
                 "project",
                 "parent_task",
                 "assignee",
-            ),
+            ).annotate(subtasks_count=Count("subtasks", distinct=True)),
         ),
-    )
+    ).annotate(subtasks_count=Count("subtasks", distinct=True))
     serializer_class = TaskDetailSerializer
 
     @add_created_by
