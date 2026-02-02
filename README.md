@@ -11,64 +11,36 @@ Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getti
 
 ## Basic Commands
 
-### Setting Up Your Users
+#### Build docker
 
-- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+`docker compose -f docker-compose.local.yml build`
 
-- To create a **superuser account**, use this command:
+#### Start server
 
-      uv run python manage.py createsuperuser
+`docker compose -f docker-compose.local.yml up`
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+#### Migrations
 
-### Type checks
+`docker compose -f docker-compose.local.yml run django python manage.py makemigrations`
 
-Running type checks with mypy:
+`docker compose -f docker-compose.local.yml run django python manage.py migrate`
 
-    uv run mypy taskero_be
 
-### Test coverage
+#### Create superuser
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
+`docker compose -f docker-compose.local.yml run django python manage.py createsuperuser`
 
-    uv run coverage run -m pytest
-    uv run coverage html
-    uv run open htmlcov/index.html
 
-#### Running tests with pytest
+## Creating your first tenant
+- Log into django admin on `http://localhost:8000/admin` using credentials you created
+- Find the tenant and domain models. If you create a tenant named `test` create domain as `test.localhost`
+- Create tenant-superuser using following command:
+    `docker compose -f docker-compose.local.yml run django python manage.py create_tenant_superuser`
 
-    uv run pytest
-
-### Live reloading and Sass CSS compilation
-
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally.html#using-webpack-or-gulp).
-
-### Celery
-
-This app comes with Celery.
-
-To run a celery worker:
-
-```bash
-cd taskero_be
-uv run celery -A config.celery_app worker -l info
-```
-
-Please note: For Celery's import magic to work, it is important _where_ the celery commands are run. If you are in the same folder with _manage.py_, you should be right.
-
-To run [periodic tasks](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html), you'll need to start the celery beat scheduler service. You can start it as a standalone process:
-
-```bash
-cd taskero_be
-uv run celery -A config.celery_app beat
-```
-
-or you can embed the beat service inside a worker with the `-B` option (not recommended for production use):
-
-```bash
-cd taskero_be
-uv run celery -A config.celery_app worker -B -l info
-```
+### Verify your tenant-superuser
+- Go to `http://test.localhost:8000/api/docs` for swagger UI
+- Find the `/api/auth/login/` API endpoint
+- Hit the endpoint using the tenant-superuser you created.
 
 ### Email Server
 
