@@ -2,15 +2,16 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from drf_spectacular.utils import extend_schema
 from taskero_be.core.decorators import add_created_by
 from taskero_be.core.decorators import add_updated_by
 from taskero_be.project_members.models import ProjectMember
 from taskero_be.projects.models import Project
-from taskero_be.projects.serializers import ProjectSerializer
-
+from taskero_be.projects.serializers import ProjectRelationShortSerializer, ProjectSearchResultsSerializer, ProjectSerializer
+from rest_framework.decorators import action
 
 class ProjectViewSet(viewsets.ModelViewSet[Project]):
-    queryset = Project.objects.all()
+    queryset = Project.objects.select_related("owner").all()
     serializer_class = ProjectSerializer
 
     @add_created_by
@@ -33,3 +34,14 @@ class ProjectViewSet(viewsets.ModelViewSet[Project]):
     @add_updated_by
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
+
+    @extend_schema(
+        responses={
+            200: ProjectSearchResultsSerializer,
+        },
+    )
+    @action(detail=False, methods=["get"], url_path="search")
+    def search(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = ProjectRelationShortSerializer(queryset, many=True)
+        return Response({"results": serializer.data})

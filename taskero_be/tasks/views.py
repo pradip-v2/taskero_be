@@ -1,16 +1,19 @@
 from django.db.models import Count
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from taskero_be.core.decorators import add_created_by
 from taskero_be.core.decorators import add_updated_by
 from taskero_be.tasks.models import Task
-from taskero_be.tasks.serializers import TaskDetailSerializer
+from taskero_be.tasks.serializers import TaskDetailSerializer, TaskDetailsShortSerializer, TaskSearchResultsSerializer
 from taskero_be.tasks.serializers import TaskSerializer
 
 
@@ -79,3 +82,14 @@ class ProjectTasksViewSet(
         "description": ["icontains"],
     }
     search_fields = ["title", "description"]
+
+    @extend_schema(
+        responses={
+            200: TaskSearchResultsSerializer,
+        },
+    )
+    @action(detail=False, methods=["get"], url_path="search")
+    def search(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = TaskDetailsShortSerializer(queryset, many=True)
+        return Response({"results": serializer.data})

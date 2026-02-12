@@ -42,3 +42,19 @@ class TaskDetailSerializer(TaskSerializer):
     class Meta:
         model = Task
         fields = serializers.ALL_FIELDS
+
+
+class TaskDetailsShortSerializer(TaskSerializer):
+    status_data = TaskStatusSerializer(
+        source="status",
+        read_only=True,
+        default=None,
+    )
+
+    class Meta:
+        model = Task
+        fields = ["id", "title", "status_data"]
+
+
+class TaskSearchResultsSerializer(serializers.Serializer):
+    results = TaskDetailsShortSerializer(many=True)

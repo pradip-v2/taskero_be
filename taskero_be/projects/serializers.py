@@ -23,3 +23,6 @@ class ProjectRelationShortSerializer(BaseModelSerializer[Project]):
     class Meta:
         model = Project
         fields = ["id", "title", "owner_data"]
+
+class ProjectSearchResultsSerializer(serializers.Serializer):
+    results = ProjectRelationShortSerializer(many=True)
