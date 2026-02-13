@@ -3,6 +3,7 @@ from rest_framework import serializers
 from taskero_be.core.serializers import BaseModelSerializer
 from taskero_be.core.tasks.serializers import TaskStatusSerializer
 from taskero_be.projects.serializers import ProjectRelationShortSerializer
+from taskero_be.tasks.exceptions import InvalidStatusChange
 from taskero_be.tasks.models import Task
 from taskero_be.users.api.serializers import UserRelationShortSerializer
 
@@ -42,6 +43,12 @@ class TaskDetailSerializer(TaskSerializer):
     class Meta:
         model = Task
         fields = serializers.ALL_FIELDS
+
+    def update(self, instance, validated_data):
+        try:
+            return super().update(instance, validated_data)
+        except InvalidStatusChange as e:
+            raise serializers.ValidationError({"status": str(e)})
 
 
 class TaskDetailsShortSerializer(TaskSerializer):

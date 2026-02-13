@@ -1,9 +1,11 @@
 from django.db import models
 from django.db import transaction
+from django.core.exceptions import ValidationError
 
 from taskero_be.core.models import BaseModel
 from taskero_be.core.tasks.models import TaskStatus
 from taskero_be.projects.models import Project
+from taskero_be.tasks.exceptions import InvalidStatusChange
 from taskero_be.users.models import User
 
 
@@ -27,7 +29,7 @@ class Task(BaseModel):
     )
     level = models.PositiveIntegerField(default=1, db_index=True)
     is_done = models.BooleanField(default=False, db_index=True)
-    status = models.ForeignKey(
+    status = models.ForeignKey[TaskStatus](
         TaskStatus,
         on_delete=models.SET_NULL,
         null=True,
@@ -50,15 +52,20 @@ class Task(BaseModel):
         return f"{self.pk}-{self.title}"
 
     def save(self, *args, **kwargs):
+
         # detect if task was marked as done
         was_done_before = False
         if self.pk:
-            old = (
-                Task.objects.filter(pk=self.pk)
-                .values_list("is_done", flat=True)
-                .first()
-            )
-            was_done_before = old
+            old = Task.objects.get(pk=self.pk)
+
+            # check if valid status change
+            if self.status \
+                    and old.status \
+                    and self.status.parent_status \
+                    and self.status.parent_status != old.status:
+                raise InvalidStatusChange("Invalid status change")
+
+            was_done_before = old.is_done
 
         super().save(*args, **kwargs)
 
