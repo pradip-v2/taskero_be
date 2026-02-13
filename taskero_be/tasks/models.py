@@ -61,8 +61,9 @@ class Task(BaseModel):
             # check if valid status change
             if self.status \
                     and old.status \
+                    and old.status.pk != self.status.pk \
                     and self.status.parent_status \
-                    and self.status.parent_status != old.status:
+                    and self.status.parent_status.pk != old.status.parent_status.pk:
                 raise InvalidStatusChange("Invalid status change")
 
             was_done_before = old.is_done

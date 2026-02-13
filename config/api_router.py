@@ -11,7 +11,7 @@ from taskero_be.tasks.views import ProjectTasksViewSet
 from taskero_be.tasks.views import TaskViewSet
 from taskero_be.tenants.views import TenantViewSet
 from taskero_be.users.api.views import UserViewSet
-
+from taskero_be.dashboards.project_dashboard.views import ProjectDashboardViewSet
 router = ExtendedSimpleRouter()
 
 
@@ -54,6 +54,7 @@ conversation_router.register(
 )
 router.register("messages", MessageViewSet, basename="messages")
 
+router.register("project-dashboard", ProjectDashboardViewSet, basename="project-dashboard")
 
 app_name = "api"
 urlpatterns = router.urls
